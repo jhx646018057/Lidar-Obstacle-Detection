@@ -37,19 +37,44 @@ src
  1. Voxel grid filtering will create a cubic grid and will filter the cloud by only leaving a single point per voxel cube, so the larger the cube length the lower the resolution of the point cloud.
  2. Region of interest: A boxed region is defined and any points outside that box are removed.
 > the point process function FilterCloud: The arguments to this function is the input cloud, voxel grid size, and min/max points representing the region of interest. The function returns the downsampled cloud with only points that were inside the region specified.
+```code
+typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint)
+...
+filterCloud = pointProcessorI->FilterCloud(inputCloud, ? , Eigen::Vector4f (?, ?, ?, 1), Eigen::Vector4f ( ?, ?, ?, 1));
+renderPointCloud(viewer,filterCloud,"filterCloud");
+```
  
 ### Step2. Point cloud segmentation(RANSAC) 
 - segment point clouds:  the filtered cloud is segmented into two parts, road(in green) and obstacles (in red, colors),  with points only in the filtered region of interest.
-- RANSAC(random sample consensus)  for planar model fitting: One type of RANSAC version selects the smallest possible subset of points to fit. For a plane, that would be three points in a 3D point cloud. The points that are within a certain distance to the model are counted as inliers. Then the number of inliers are counted, by iterating through every remaining point and calculating its distance to the model
+- RANSAC(random sample consensus)  for planar model fitting: RANSAC stands for Random Sample Consensus, and is a method for detecting outliers in data. RANSAC runs for a max number of iterations, and returns the model with the best fit. Each iteration randomly picks a subsample of the data and fits a model through it, such as a line or a plane. Then the iteration with the highest number of inliers or the lowest noise is used as the best model.
+> `SegmentPlane` function in src/processPointClouds.cpp
+```code
+std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold);
+// function to segment cloud into two parts, the drivable plane and obstacles 
+std::pair<pcl::PointCloud<pcl::PointXYZ>::Ptr, pcl::PointCloud<pcl::PointXYZ>::Ptr> segmentCloud = pointProcessor->SegmentPlane(inputCloud, 100, 0.2);
+renderPointCloud(viewer,segmentCloud.first,"obstCloud",Color(1,0,0));
+renderPointCloud(viewer,segmentCloud.second,"planeCloud",Color(0,1,0));
+...
+```
+
 
 ### Step3. Clustering the obstacle clouds
 Next step is to cluster the obstacle cloud based on the proximity of neighboring points.  The challenges with clustering based on proximity is a big object  can be recognized in separate clusters. For example, a big truck can be broken up into two, front and back. It would be resolved by increasing the distance tolerance however, it would cause another problem such as truck and parked car would be grouped together.
 - PCL to cluster obstacles
 - KD-tree to store point cloud data : To do a nearest neighbor search efficiently, KD-tree data sturcture is applied(O(log(n)) since it is tree-search. By grouping points into regions in a KD-Tree, calculating distance for possibly thousands of points can be avoided.A KD-Tree is a binary tree that splits points between alternating axes. By separating space by splitting regions, nearest neighbor search can be made much faster when using an algorithm like euclidean clustering.
+ > src/quiz/cluster/kdtree
 `cluster.cpp` there is a function for rendering the tree after points have been inserted into it.
 - Euclidean Clustering with a KD-tree to find clusters and distinguish vehicles
 > euclideanCluster function returns a vector of vector ints, this is the list of cluster indices.
+```code
+std::vector<std::vector<int>> clusters = euclideanCluster(points, tree, 3.0);
+```
 - Building boxes around clusters
+```code environment.cpp
+Box box = pointProcessor->BoundingBox(cluster);
+renderBox(viewer,box,clusterId);
+
+```
 
 ### Step4. Find Bounding Boxes for the clusters
 Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in environment.cpp.
@@ -58,6 +83,12 @@ Last step is to place bounding boxes around the individual clusters. Bounding bo
 the point cloud input will vary from frame to frame, so input point cloud will now become an input argument for the processor
 streamPcd a folder directory that contains all the sequentially ordered pcd files , and it returns a chronologically ordered vector of all those file names, called stream
  pcd files are located in src/sensors/data/
+ ```code
+ ProcessPointClouds<pcl::PointXYZI>* pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
+std::vector<boost::filesystem::path> stream = pointProcessorI->streamPcd("../src/sensors/data/filename.pcd");
+auto streamIterator = stream.begin();
+pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloudI;
+```
 
 ## Challenge and next shortcomings
 what if the cluster was a very long rectangular object at a 45 degree angle to the X axis. The resulting bounding box would be a unnecessarily large, and would constrain the car's available space to move around. PCA, principal component analysis and including Z axis rotations would be helpful. A challenge problem(src/sensors/data/pcd/data_2 to  detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.) is then to find the smallest fitting box but which is oriented flat with the XY plane.
