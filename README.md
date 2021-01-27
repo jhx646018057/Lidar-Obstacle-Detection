@@ -76,7 +76,6 @@ Last step is to place bounding boxes around the individual clusters. Bounding bo
 ```code 
 Box box = pointProcessor->BoundingBox(cluster);
 renderBox(viewer,box,clusterId);
-
 ```
 
 ### streamPCD
