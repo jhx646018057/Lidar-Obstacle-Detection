@@ -18,6 +18,7 @@ The road is segmented from the vehicles and there are boxes placed around the de
 ## Implementation Approach
  The detection pipeline is composed of filtering, segmentation, clustering, and bounding boxes
 ### Code Structure
+```
 src
 |-render
        |-box.h - this file has the struct definitions for box objects
@@ -30,7 +31,7 @@ src
        |-cluster.cpp - 
 |-environment.cpp - the main file for creating pcl viewer::a processPointClouds object and processing and visualizing pcd
 |-processPointClouds.h/processPointClouds.cpp - Functions for filtering, segmenting, clustering, boxing, loading, to process the pcd and saving pcd.
-
+```
 ### Step1. Filtering 
  One way to create associations between two different frames is by how close in proximity two detections are to each other and how similar they look. There are also other filtering procedures such as looking at detection that are seen in consecutive frames before they are considered.  Another way is to filter based on bounding boxes, their volume and shapes. In this project, detail bounding boxes filtering is applied as follows: 
  1. Voxel grid filtering will create a cubic grid and will filter the cloud by only leaving a single point per voxel cube, so the larger the cube length the lower the resolution of the point cloud.
