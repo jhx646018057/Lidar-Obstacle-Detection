@@ -69,15 +69,15 @@ Next step is to cluster the obstacle cloud based on the proximity of neighboring
 ```code
 std::vector<std::vector<int>> clusters = euclideanCluster(points, tree, 3.0);
 ```
+
+### Step4. Find Bounding Boxes for the clusters
+Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in `environment.cpp`.
 - Building boxes around clusters
-```code environment.cpp
+```code 
 Box box = pointProcessor->BoundingBox(cluster);
 renderBox(viewer,box,clusterId);
 
 ```
-
-### Step4. Find Bounding Boxes for the clusters
-Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in environment.cpp.
 
 ### streamPCD
 the point cloud input will vary from frame to frame, so input point cloud will now become an input argument for the processor
