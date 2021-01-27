@@ -40,29 +40,33 @@ src
  
 ### Step2. Point cloud segmentation(RANSAC) 
 - segment point clouds:  the filtered cloud is segmented into two parts, road(in green) and obstacles (in red, colors),  with points only in the filtered region of interest.
-```Code
- // Create data
- pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData3D();
-```
 - RANSAC(random sample consensus)  for planar model fitting: One type of RANSAC version selects the smallest possible subset of points to fit. For a plane, that would be three points in a 3D point cloud. The points that are within a certain distance to the model are counted as inliers. Then the number of inliers are counted, by iterating through every remaining point and calculating its distance to the model
 
 ### Step3. Clustering the obstacle clouds
 Next step is to cluster the obstacle cloud based on the proximity of neighboring points.  The challenges with clustering based on proximity is a big object  can be recognized in separate clusters. For example, a big truck can be broken up into two, front and back. It would be resolved by increasing the distance tolerance however, it would cause another problem such as truck and parked car would be grouped together.
 - PCL to cluster obstacles
-- KD-tree to store point cloud data : To do a nearest neighbor search efficiently, KD-tree data sturcture is applied(O(log(n)) since it is tree-search. By grouping points into regions in a KD-Tree, calculating distance for possibly thousands of points can be avoided.
+- KD-tree to store point cloud data : To do a nearest neighbor search efficiently, KD-tree data sturcture is applied(O(log(n)) since it is tree-search. By grouping points into regions in a KD-Tree, calculating distance for possibly thousands of points can be avoided.A KD-Tree is a binary tree that splits points between alternating axes. By separating space by splitting regions, nearest neighbor search can be made much faster when using an algorithm like euclidean clustering.
+`cluster.cpp` there is a function for rendering the tree after points have been inserted into it.
 - Euclidean Clustering with a KD-tree to find clusters and distinguish vehicles
 > euclideanCluster function returns a vector of vector ints, this is the list of cluster indices.
 - Building boxes around clusters
 
+### streamPCD
+the point cloud input will vary from frame to frame, so input point cloud will now become an input argument for the processor
+streamPcd a folder directory that contains all the sequentially ordered pcd files , and it returns a chronologically ordered vector of all those file names, called stream
+ pcd files are located in src/sensors/data/
 
-### Processing Point Cloud Data(PCD) 
-- PCD (Point Cloud Data) 
-- Filter PCD data
-- multiple PCD files 
-- apply point cloud processing to detect obtacles 
+### Step4. Find Bounding Boxes for the clusters
+Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in environment.cpp.
+
+## Object Detection Result
+Most bounding boxes can be followed through the lidar stream, and major objects don't lose or gain bounding boxes in the middle of the lidar stream.
+
+## Challenge and next shortcomings
+what if the cluster was a very long rectangular object at a 45 degree angle to the X axis. The resulting bounding box would be a unnecessarily large, and would constrain the car's available space to move around. PCA, principal component analysis and including Z axis rotations would be helpful. A challenge problem(src/sensors/data/pcd/data_2 to  detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.) is then to find the smallest fitting box but which is oriented flat with the XY plane.
 
 ## Runtime environment 
 ### Dependency
 * [PCL v1.2](https://github.com/PointCloudLibrary/pcl)
-The Point Cloud Library (PCL) is a standalone, large scale, open project for 2D/3D image and point cloud processing.
+The Point Cloud Library (PCL) is a standalone, large scale, open source project for 2D/3D image and point cloud processing. PCL is widely used in the robotics community for working with point cloud data. There are a lot of built in functions in PCL that can help to detect obstacles such as Segmentation, Extraction, and Clustering.
 * [Point Cloud tutorial](https://pcl.readthedocs.io/projects/tutorials/en/latest/using_pcl_pcl_config.html#using-pcl-pcl-config)
