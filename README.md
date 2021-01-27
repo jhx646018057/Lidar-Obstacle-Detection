@@ -51,16 +51,13 @@ Next step is to cluster the obstacle cloud based on the proximity of neighboring
 > euclideanCluster function returns a vector of vector ints, this is the list of cluster indices.
 - Building boxes around clusters
 
+### Step4. Find Bounding Boxes for the clusters
+Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in environment.cpp.
+
 ### streamPCD
 the point cloud input will vary from frame to frame, so input point cloud will now become an input argument for the processor
 streamPcd a folder directory that contains all the sequentially ordered pcd files , and it returns a chronologically ordered vector of all those file names, called stream
  pcd files are located in src/sensors/data/
-
-### Step4. Find Bounding Boxes for the clusters
-Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in environment.cpp.
-
-## Object Detection Result
-Most bounding boxes can be followed through the lidar stream, and major objects don't lose or gain bounding boxes in the middle of the lidar stream.
 
 ## Challenge and next shortcomings
 what if the cluster was a very long rectangular object at a 45 degree angle to the X axis. The resulting bounding box would be a unnecessarily large, and would constrain the car's available space to move around. PCA, principal component analysis and including Z axis rotations would be helpful. A challenge problem(src/sensors/data/pcd/data_2 to  detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.) is then to find the smallest fitting box but which is oriented flat with the XY plane.
