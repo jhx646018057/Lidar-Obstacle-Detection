@@ -32,10 +32,35 @@ src
 |-environment.cpp - the main file for creating pcl viewer::a processPointClouds object and processing and visualizing pcd
 |-processPointClouds.h/processPointClouds.cpp - Functions for filtering, segmenting, clustering, boxing, loading, to process the pcd and saving pcd.
 ```
-### Step1. Filtering 
+### Load 3D PCD(point cloud data) 
+the point cloud input will vary from frame to frame, so input point cloud will now become an input argument for the processor
+streamPcd a folder directory that contains all the sequentially ordered pcd files , and it returns a chronologically ordered vector of all those file names, called stream. 
+ pcd files are located in src/sensors/data/
+```code
+void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
+{
+  ProcessPointClouds<pcl::PointXYZI>* pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
+  pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pointProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd");
+  renderPointCloud(viewer,inputCloud,"inputCloud");
+}
+```
+1. create a point processor for intensity point clouds `pcl::PointXYZI`
+2. render the real pcd in `environment.cpp` using `renderPointCound()`
+### Step1. Filtering with PCL
  One way to create associations between two different frames is by how close in proximity two detections are to each other and how similar they look. There are also other filtering procedures such as looking at detection that are seen in consecutive frames before they are considered.  Another way is to filter based on bounding boxes, their volume and shapes. In this project, detail bounding boxes filtering is applied as follows: 
  1. Voxel grid filtering will create a cubic grid and will filter the cloud by only leaving a single point per voxel cube, so the larger the cube length the lower the resolution of the point cloud.
+ ```code
+   pcl::VoxelGrid<PointT> vg;
+   vg.setInputCloud(cloud);
+   vg.filter(*cloudFiltered);
+```
  2. Region of interest: A boxed region is defined and any points outside that box are removed.
+ ```
+    pcl::CropBox<PointT> region(true);
+   region.setInputCloud(cloudFiltered);
+   region.filter(*cloudRegion);
+ ```
+ 3. Call filter function in `pointProcessorI` in the `environment.cpp`
 > the point process function FilterCloud: The arguments to this function is the input cloud, voxel grid size, and min/max points representing the region of interest. The function returns the downsampled cloud with only points that were inside the region specified.
 ```code
 typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint)
@@ -57,7 +82,6 @@ renderPointCloud(viewer,segmentCloud.second,"planeCloud",Color(0,1,0));
 ...
 ```
 
-
 ### Step3. Clustering the obstacle clouds
 Next step is to cluster the obstacle cloud based on the proximity of neighboring points.  The challenges with clustering based on proximity is a big object  can be recognized in separate clusters. For example, a big truck can be broken up into two, front and back. It would be resolved by increasing the distance tolerance however, it would cause another problem such as truck and parked car would be grouped together.
 - PCL to cluster obstacles
@@ -76,17 +100,6 @@ Last step is to place bounding boxes around the individual clusters. Bounding bo
 ```code 
 Box box = pointProcessor->BoundingBox(cluster);
 renderBox(viewer,box,clusterId);
-```
-
-### streamPCD
-the point cloud input will vary from frame to frame, so input point cloud will now become an input argument for the processor
-streamPcd a folder directory that contains all the sequentially ordered pcd files , and it returns a chronologically ordered vector of all those file names, called stream
- pcd files are located in src/sensors/data/
- ```code
- ProcessPointClouds<pcl::PointXYZI>* pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
-std::vector<boost::filesystem::path> stream = pointProcessorI->streamPcd("../src/sensors/data/filename.pcd");
-auto streamIterator = stream.begin();
-pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloudI;
 ```
 
 ## Challenge and next shortcomings
