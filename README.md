@@ -32,17 +32,16 @@ src
 |-environment.cpp - the main file for creating pcl viewer::a processPointClouds object and processing and visualizing pcd
 |-processPointClouds.h/processPointClouds.cpp - Functions for filtering, segmenting, clustering, boxing, loading, to process the pcd and saving pcd.
 ```
-### Load 3D PCD(point cloud data) 
+### Load 3D PCD(point cloud data) stream 
 the point cloud input will vary from frame to frame, so input point cloud will now become an input argument for the processor
 streamPcd a folder directory that contains all the sequentially ordered pcd files , and it returns a chronologically ordered vector of all those file names, called stream. 
  pcd files are located in src/sensors/data/
 ```code
-void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
-{
   ProcessPointClouds<pcl::PointXYZI>* pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
-  pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pointProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd");
+  //pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloudI;  = pointProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd"); //one singke pcd file
+  std::vector<boost::filesystem::path> stream = pointProcessorI->streamPcd("../src/sensors/data/pcd/data_1"); //pcd stream
+  auto streamIterator = stream.begin();
   renderPointCloud(viewer,inputCloud,"inputCloud");
-}
 ```
 1. create a point processor for intensity point clouds `pcl::PointXYZI`
 2. render the real pcd in `environment.cpp` using `renderPointCound()`
