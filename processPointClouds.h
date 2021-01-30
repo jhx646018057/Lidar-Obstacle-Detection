@@ -11,7 +11,6 @@
 #include <pcl/kdtree/kdtree.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/segmentation/extract_clusters.h>
-
 #include <pcl/common/transforms.h>
 #include <iostream> 
 #include <string>  
@@ -20,9 +19,7 @@
 #include <chrono>
 #include <unordered_set>
 #include "render/box.h"
-#include "kdtree.h"
-//#include "ransac2d.cpp"
-#include "ransac.cpp"
+#include "kdtree3D.h"
 
 template<typename PointT>
 class ProcessPointClouds {
@@ -55,6 +52,11 @@ public:
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> RansacPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceTol);
      //EuclideanClustering
     std::vector<typename pcl::PointCloud<PointT>::Ptr> EuclideanClustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
+      
+    //Added : euclideanClusterHelper to use KdTree3D
+    std::vector<std::vector<int>> euclideanClusterHelper(typename pcl::PointCloud<PointT>::Ptr cloud, typename KdTree3D<PointT>::KdTree3D* tree, float distanceTol, int minSize, int maxSize);
+    //Added : Proximity
+    void Proximity(typename pcl::PointCloud<PointT>::Ptr cloud,std::vector<int> &cluster,std::vector<bool> &processed_f,int idx,typename KdTree3D<PointT>::KdTree3D* tree,float distanceTol, int maxSize);
 
   
 };
