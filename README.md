@@ -101,19 +101,10 @@ Box box = pointProcessor->BoundingBox(cluster);
 renderBox(viewer,box,clusterId);
 ```
 ## Result
-![data 1](0130data1FPS.mov)
-<video controls="controls">
-  <source type="video/mp4" src="0130data1FPS.mov"></source>
-  <source type="video/webm" src="0130data1FPS.webm"></source>
-  <p>Your browser does not support the video element.</p>
-</video>
+![data 1](0130data1FPS.gif)
 
-![data 2](0130data2FPS.mov)
-<video controls="controls">
-  <source type="video/mp4" src="0130data2FPS.mov"></source>
-  <source type="video/webm" src="0130data2FPS.webm"></source>
-  <p>Your browser does not support the video element.</p>
-</video>
+![data 2](0130data2FPS.gif)
+
  
 ## Challenge and next shortcomings
 what if the cluster was a very long rectangular object at a 45 degree angle to the X axis. The resulting bounding box would be a unnecessarily large, and would constrain the car's available space to move around. PCA, principal component analysis and including Z axis rotations would be helpful. A challenge problem(src/sensors/data/pcd/data_2 to  detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.) is then to find the smallest fitting box but which is oriented flat with the XY plane.
