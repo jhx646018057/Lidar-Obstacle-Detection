@@ -1,5 +1,5 @@
 # Lidar-Obstacle-Detection
-This project implements Lidar obstacle detection which filters, segments, and clusters real point cloud data to detect obstacles in a driving environment.
+This project implements Lidar obstacle detection which filters, segments, and clusters real point cloud data to detect obstacles in a driving environment. Implemented segmentation using the 3D RANSAC algorithm from scratch and Eucleadian Clustering along with the KD-Tree algorithm from scratch rather than using PCD libraries to to detect car and trucks on a narrow street using Lidar. The detection pipeline follows  filtering, segmentation, clustering, and bounding boxes.
 
 ## Project Goal
 The goal of this project is to detect car and trucks on a narrow street using lidar data and points clouds.
@@ -27,8 +27,8 @@ src
        |-lidar.h - has functions simulating lidar sensing and creating point cloud data using ray casting
        |-data - this directory contains pcd data
 |-cluster
-       |-kdtree.h - 
-       |-cluster.cpp - 
+       |-cluster.cpp 
+|-kdtree3d.h 
 |-environment.cpp - the main file for creating pcl viewer::a processPointClouds object and processing and visualizing pcd
 |-processPointClouds.h/processPointClouds.cpp - Functions for filtering, segmenting, clustering, boxing, loading, to process the pcd and saving pcd.
 ```
@@ -101,7 +101,9 @@ Box box = pointProcessor->BoundingBox(cluster);
 renderBox(viewer,box,clusterId);
 ```
 ## Result
-Data1 and Data2 result
+Data1(src/sensors/data/pcd/data_1) and Data2 result ( src/sensors/data/pcd/data_2) 
+Data1 is to detect/track vehicles, and the pole on the right side of the vehicle enclosed by Bounding Boxes. There is one box per detected object.
+Data2 is to detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.
 
 <img src="0130data1FPS.gif" alt="Data1" width="400"/>      <img src="0130data2FPS.gif" alt="Data2" width="400"/>
  
