@@ -102,8 +102,8 @@ renderBox(viewer,box,clusterId);
 ```
 ## Result
 Data1(src/sensors/data/pcd/data_1) and Data2 result ( src/sensors/data/pcd/data_2) 
-Data1 is to detect/track vehicles, and the pole on the right side of the vehicle enclosed by Bounding Boxes. There is one box per detected object.
-Data2 is to detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.
+* Data1 is to detect/track vehicles, and the pole on the right side of the vehicle enclosed by Bounding Boxes. There is one box per detected object.
+* Data2 is to detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.
 
 <img src="0130data1FPS.gif" alt="Data1" width="400"/>      <img src="0130data2FPS.gif" alt="Data2" width="400"/>
  
