@@ -53,7 +53,7 @@ streamPcd a folder directory that contains all the sequentially ordered pcd file
    vg.setInputCloud(cloud);
    vg.filter(*cloudFiltered);
 ```
- 2. Region of interest: A boxed region is defined and any points outside that box are removed.
+ 2. Region of interest: A boxed region is defined and any points outside that box are removed. `class pcl::CropBox< PointT > CropBox` is a filter that allows filtering all the data inside of a given box.
  ```
     pcl::CropBox<PointT> region(true);
    region.setInputCloud(cloudFiltered);
@@ -94,7 +94,7 @@ std::vector<std::vector<int>> clusters = euclideanCluster(points, tree, 3.0);
 ```
 
 ### Step4. Find Bounding Boxes for the clusters
-Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in `environment.cpp`.
+Last step is to place bounding boxes around the individual clusters. Bounding boxes enclose vehicles, and the pole on the right side of the vehicle,  one box per detected object. The function BoundingBox looks at the min and max point values of the input cloud and stores those parameters in a box struct container. For each of the cluster, a bounding box is fitted within min and max coordinates of a cluster. To render bounding boxes around the clusters below codes are inside the loop that renders clusters in `environment.cpp`.
 - Building boxes around clusters
 ```code 
 Box box = pointProcessor->BoundingBox(cluster);
@@ -115,3 +115,9 @@ what if the cluster was a very long rectangular object at a 45 degree angle to t
 * [PCL v1.2](https://github.com/PointCloudLibrary/pcl)
 The Point Cloud Library (PCL) is a standalone, large scale, open source project for 2D/3D image and point cloud processing. PCL is widely used in the robotics community for working with point cloud data. There are a lot of built in functions in PCL that can help to detect obstacles such as Segmentation, Extraction, and Clustering.
 * [Point Cloud tutorial](https://pcl.readthedocs.io/projects/tutorials/en/latest/using_pcl_pcl_config.html#using-pcl-pcl-config)
+
+## Reference
+* [PCL Eclidean Clustering](https://pcl.readthedocs.io/projects/tutorials/en/latest/cluster_extraction.html#cluster-extraction)
+* [Planar Segmentation](https://pcl.readthedocs.io/projects/tutorials/en/latest/planar_segmentation.html)
+* [Ransac-Random Sample Consensus](https://pcl.readthedocs.io/projects/tutorials/en/latest/random_sample_consensus.html)
+* [KdTree Search](https://pcl.readthedocs.io/projects/tutorials/en/latest/kdtree_search.html#kdtree-search)
