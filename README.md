@@ -101,11 +101,12 @@ Box box = pointProcessor->BoundingBox(cluster);
 renderBox(viewer,box,clusterId);
 ```
 ## Result
-Data1(src/sensors/data/pcd/data_1) and Data2 result ( src/sensors/data/pcd/data_2) 
-* Data1 is to detect/track vehicles, and the pole on the right side of the vehicle enclosed by Bounding Boxes. There is one box per detected object.
-* Data2 is to detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.
+The detection is consistent across the lidar stream and their boxes placed around the detected obstacles both [Data1](/sensors/data/pcd/data_1) and Data2(/sensors/data/pcd/data_2). 
+* [Data1](/sensors/data/pcd/data_1) is to detect/track vehicles, and the pole on the right side of the vehicle enclosed by Bounding Boxes. There is one box per detected object.
+* [Data2]((/sensors/data/pcd/data_2) is to detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.
 
 <img src="0130data1FPS.gif" alt="Data1" width="400"/>      <img src="0130data2FPS.gif" alt="Data2" width="400"/>
+By adjusting the Eigenvector values I was able to avoid the overlapping among bounding boxes when the boxes were interrupting the path in the data2.  
  
 ## Challenge and next shortcomings
 what if the cluster was a very long rectangular object at a 45 degree angle to the X axis. The resulting bounding box would be a unnecessarily large, and would constrain the car's available space to move around. PCA, principal component analysis and including Z axis rotations would be helpful. A challenge problem(src/sensors/data/pcd/data_2 to  detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.) is then to find the smallest fitting box but which is oriented flat with the XY plane.
@@ -122,3 +123,4 @@ The Point Cloud Library (PCL) is a standalone, large scale, open source project 
 * [Ransac-Random Sample Consensus](https://pcl.readthedocs.io/projects/tutorials/en/latest/random_sample_consensus.html)
 * [Ransac Algorithm](http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/FISHER/RANSAC/)
 * [KdTree Search](https://pcl.readthedocs.io/projects/tutorials/en/latest/kdtree_search.html#kdtree-search)
+* [Eigenvector and Eigenvalues](https://www.mathsisfun.com/algebra/eigenvalue.html) 
