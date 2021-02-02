@@ -106,6 +106,7 @@ The detection is consistent across the lidar stream and their boxes placed aroun
 * [Data2]((/sensors/data/pcd/data_2) is to detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.
 
 <img src="0130data1FPS.gif" alt="Data1" width="400"/>      <img src="0130data2FPS.gif" alt="Data2" width="400"/>
+
 By adjusting the Eigenvector values I was able to avoid the overlapping among bounding boxes when the boxes were interrupting the path in the data2.  
  
 ## Challenge and next shortcomings
