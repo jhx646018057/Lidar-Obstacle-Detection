@@ -120,4 +120,5 @@ The Point Cloud Library (PCL) is a standalone, large scale, open source project 
 * [PCL Eclidean Clustering](https://pcl.readthedocs.io/projects/tutorials/en/latest/cluster_extraction.html#cluster-extraction)
 * [Planar Segmentation](https://pcl.readthedocs.io/projects/tutorials/en/latest/planar_segmentation.html)
 * [Ransac-Random Sample Consensus](https://pcl.readthedocs.io/projects/tutorials/en/latest/random_sample_consensus.html)
+* [Ransac Algorithm](http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/FISHER/RANSAC/)
 * [KdTree Search](https://pcl.readthedocs.io/projects/tutorials/en/latest/kdtree_search.html#kdtree-search)
