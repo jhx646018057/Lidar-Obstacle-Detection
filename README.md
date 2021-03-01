@@ -105,9 +105,10 @@ The detection is consistent across the lidar stream and their boxes placed aroun
 * [Data1](/sensors/data/pcd/data_1) is to detect/track vehicles, and the pole on the right side of the vehicle enclosed by Bounding Boxes. There is one box per detected object.
 * [Data2](/sensors/data/pcd/data_2) is to detect/track a bicyclist riding in front of the car, along with detecting/tracking the other surrounding obstacles in the scene.
 
-|Data1 | Data2|
-|--|--|
-|<img src="0130data1FPS.gif" alt="Data1" width="400"/>   |   <img src="0130data2FPS.gif" alt="Data2" width="400"/>|
+| DATA |FPS mode | XY mode |
+|--|--|--|
+|Data1|<img src="0130data1FPS.gif" alt="Data1" width="400"/>   |    <img src="0228Data1XY.gif" alt="Data1" width="400"/>|
+|Data2| <img src="0130data2FPS.gif" alt="Data2" width="400"/> | |
 
 By adjusting the Eigenvector values I was able to avoid the overlapping among bounding boxes when the boxes were interrupting the path in the data2.  
  
